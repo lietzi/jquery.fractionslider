@@ -11,13 +11,13 @@
  *
  * Special thanks to: Lietzi (https://github.com/lietzi) for contributing
  */
-( function($) {
+(function ($) {
 
 	/** ************************* **/
 	/** Methods  **/
 	/** ************************* **/
 	var slider = null, methods = {
-		init : function(option) {
+		init : function (option) {
 
 			// defaults & options
 			var options = $.extend({
@@ -50,7 +50,7 @@
 				'responsive' : false, // activates the responsive slider
 				'increase' : false, // if set, slider is allowed to get bigger than basic dimensions
 				'dimensions' : '', // set basic dimension (width,height in px) for the responisve slider - the plugin with position elements with data-position relative to this dimensions (please see the documentation for more info),
-				
+
 				'startCallback' : null,
 				'startNextSlideCallback' : null,
 				'stopCallback' : null,
@@ -61,24 +61,24 @@
 				'pagerCallback' : null
 			}, option);
 
-			return this.each(function() {
+			return this.each(function () {
 				// ready for take-off
 				slider = new FractionSlider(this, options);
 			});
 		},
-		pause : function() {
+		pause : function () {
 			slider.pause(true);
 		},
-		resume : function() {
+		resume : function () {
 			slider.resume();
 		},
-		stop : function() {
+		stop : function () {
 			slider.stop();
 		},
-		start : function() {
+		start : function () {
 			slider.start();
 		},
-		startNextSlide : function() {
+		startNextSlide : function () {
 			slider.startNextSlide();
 		}
 	};
@@ -108,14 +108,14 @@
 			finishedObjs : 0 // finsihed objects (in step)
 		},
 
-		// Here are Slide elements temporarily stored
-		temp = {
-			currentSlide : null, // current Slide
-			lastSlide : null, // last Slide (for anim out)
-			animationkey : 'none' // animation for slidechange
-		}, timeouts = [], fractionObjs = null,
-		// objs for current step
-		dX = null, dY = null;
+			// Here are Slide elements temporarily stored
+			temp = {
+				currentSlide : null, // current Slide
+				lastSlide : null, // last Slide (for anim out)
+				animationkey : 'none' // animation for slidechange
+			}, timeouts = [], fractionObjs = null,
+			// objs for current step
+			dX = null, dY = null;
 
 		$(element).wrapInner('<div class="fraction-slider" />');
 
@@ -141,25 +141,25 @@
 		/** ************************* **/
 
 		function init() {
-			
+
 			// controls
 			if (options.controls) {
 				slider.append('<a href="#" class="prev"></a><a href="#" class="next" ></a>');
 
-				slider.find('.next').bind('click', function() {
+				slider.find('.next').bind('click', function () {
 					return nextBtnPressed();
 				});
 
-				slider.find('.prev').bind('click', function() {
+				slider.find('.prev').bind('click', function () {
 					return prevBtnPressed();
 				});
 			}
-			
+
 			if (options.pauseOnHover) {
 				slider.bind({
-					mouseenter: function(){ pause(false); },
-					mouseleave: function(){ resume(); }
-					});
+					mouseenter: function () { pause(false); },
+					mouseleave: function () { resume(); }
+				});
 			}
 
 			// fullwidth setup
@@ -179,7 +179,7 @@
 				slider.append(pager);
 			}
 
-			slider.children('.slide').each(function(index) {
+			slider.children('.slide').each(function (index) {
 				var slide = $(this);
 				slide.children().attr('rel', index).addClass('fs_obj');
 				slide.children('[data-fixed]').addClass('fs_fixed_obj');
@@ -221,12 +221,12 @@
 			vars.running = true;
 
 			cycle('slide');
-			
+
 			methodeCallback(options.startCallback);
 		}
 
 
-		this.start = function() {// for method calls
+		this.start = function () { // for method calls
 			start();
 		};
 
@@ -236,12 +236,12 @@
 			vars.running = true;
 
 			nextSlide();
-			
+
 			methodeCallback(options.startNextSlideCallback);
 		}
 
 
-		this.startNextSlide = function() {// for method calls
+		this.startNextSlide = function () { // for method calls
 			startNextSlide();
 		};
 
@@ -253,12 +253,12 @@
 			slider.find('.slide').stop(true, true);
 			slider.find('.fs_obj').stop(true, true).removeClass('fs-animation');
 			stopTimeouts(timeouts);
-			
+
 			methodeCallback(options.stopCallback);
 		}
 
 
-		this.stop = function() {// for method calls
+		this.stop = function () { // for method calls
 			stop();
 		};
 
@@ -267,15 +267,15 @@
 			vars.pause = true;
 			vars.running = false;
 
-			if(finish) {
+			if (finish) {
 				slider.find('.fs-animation').finish(); // finish the current step
 			}
-			
+
 			methodeCallback(options.pauseCallback);
 		}
 
 
-		this.pause = function() {// for method calls
+		this.pause = function () {// for method calls
 			pause(false);
 		};
 
@@ -284,26 +284,25 @@
 			vars.stop = false;
 			vars.pause = false;
 			vars.running = true;
-			
-			if( vars.slideComplete ) {
+
+			if (vars.slideComplete) {
 				cycle('slide');
-			} else if( vars.stepComplete ) {
+			} else if (vars.stepComplete) {
 				cycle('step');
 			} else {
 				if (vars.finishedObjs < vars.maxObjs) {
-					// do nothing - elements are still animating
-				} else if (vars.currentStep < vars.maxStep) { // IS THIS STILL NEEDED?
-					cycle('step'); // IS THIS STILL NEEDED?
+					// TODO: AVOID EMPTY BLOCK - do nothing - elements are still animating
+				} else if (vars.currentStep < vars.maxStep) { // TODO: IS THIS STILL NEEDED?
+					cycle('step'); // TODO: IS THIS STILL NEEDED?
 				} else {
-					cycle('slide'); // IS THIS STILL NEEDED?
+					cycle('slide'); // TODO:IS THIS STILL NEEDED?
 				}
 			}
-			
-			methodeCallback(options.resumeCallback );
+
+			methodeCallback(options.resumeCallback);
 		}
 
-
-		this.resume = function() {// for method calls
+		this.resume = function () {// for method calls
 			resume();
 		};
 
@@ -316,7 +315,7 @@
 			vars.running = true;
 
 			slideChangeControler();
-			
+
 			methodeCallback(options.nextSlideCallback);
 		}
 
@@ -329,7 +328,7 @@
 			vars.running = true;
 
 			slideChangeControler();
-			
+
 			methodeCallback(options.prevSlideCallback);
 		}
 
@@ -342,16 +341,16 @@
 			vars.running = true;
 
 			slideChangeControler();
-			
+
 			methodeCallback(options.pagerCallback);
 		}
-		
+
 		/** ************************* **/
 		/** CALLBACKS **/
 		/** ************************* **/
-		
+
 		function methodeCallback(callback) {
-			$.isFunction( callback ) && callback.call( this, slider, vars.currentSlide, vars.lastSlide, vars.currentStep  );
+			$.isFunction(callback) && callback.call(this, slider, vars.currentSlide, vars.lastSlide, vars.currentStep);
 		}
 
 		/** ************************* **/
@@ -359,9 +358,9 @@
 		/** ************************* **/
 
 		function pagerPressed(el) {
-			var target = parseInt($(el).attr('rel'));
+			var target = parseInt($(el).attr('rel'), 10);
 
-			if (target != vars.currentSlide) {
+			if (target !== vars.currentSlide) {
 				stop();
 				targetSlide(target);
 			}
@@ -386,18 +385,18 @@
 
 		function cycle(type) {
 			if (!vars.pause && !vars.stop && vars.running) {
-				switch(type) {
-					case "slide":
-						vars.slideComplete = false;
-						slideRotation();
-						break;
-					case "step":	
-						vars.stepComplete = false;
-						iterateSteps();
-						break;
-					case "obj":
-						iterateObjs();
-						break;
+				switch (type) {
+				case "slide":
+					vars.slideComplete = false;
+					slideRotation();
+					break;
+				case "step":
+					vars.stepComplete = false;
+					iterateSteps();
+					break;
+				case "obj":
+					iterateObjs();
+					break;
 				}
 			}
 		}
@@ -407,7 +406,7 @@
 		/** ************************* **/
 
 		function slideRotation() {
-			
+
 			var timeout = options.timeout;
 			// set timeout | first slide instant start
 			if (vars.init) {
@@ -415,9 +414,9 @@
 				slideChangeControler(true);
 			} else {
 				// timeout after slide is complete
-				timeouts.push(setTimeout(function() {
+				timeouts.push(setTimeout(function () {
 					// stops the slider after first slide (only when slide count = 1)
-					if (vars.maxSlide == 0 && vars.running == true) {
+					if (vars.maxSlide === 0 && vars.running === true) {
 						// TODO: better solution!
 					} else {
 						vars.lastSlide = vars.currentSlide;
@@ -436,7 +435,7 @@
 			}
 			if (vars.currentSlide < 0) {
 				vars.currentSlide = vars.maxSlide;
-			}	
+			}
 
 			temp.currentSlide = slider.children('.slide:eq(' + vars.currentSlide + ')').addClass('active-slide');
 
@@ -466,30 +465,30 @@
 			if (options.slideEndAnimation && vars.lastSlide != null) {
 				objOut();
 			} else {
-				switch(temp.animation) {
-					case 'none':
-						startSlide();
-						endSlide();
-						break;
-					case 'scrollLeft':
-						startSlide();
-						endSlide();
-						break;
-					case 'scrollRight':
-						startSlide();
-						endSlide();
-						break;
-					case 'scrollTop':
-						startSlide();
-						endSlide();
-						break;
-					case 'scrollBottom':
-						startSlide();
-						endSlide();
-						break;
-					default:
-						startSlide();
-						break;
+				switch (temp.animation) {
+				case 'none':
+					startSlide();
+					endSlide();
+					break;
+				case 'scrollLeft':
+					startSlide();
+					endSlide();
+					break;
+				case 'scrollRight':
+					startSlide();
+					endSlide();
+					break;
+				case 'scrollTop':
+					startSlide();
+					endSlide();
+					break;
+				case 'scrollBottom':
+					startSlide();
+					endSlide();
+					break;
+				default:
+					startSlide();
+					break;
 				}
 			}
 		}
@@ -551,7 +550,7 @@
 		function getStepsForSlide() {
 			var objs = temp.currentSlide.children(), maximum = 0;
 
-			objs.each(function() {
+			objs.each(function () {
 				var value = parseFloat($(this).attr('data-step'));
 				maximum = (value > maximum) ? value : maximum;
 			});
@@ -609,8 +608,8 @@
 			obj.addClass('fs-animation');
 
 			var position = obj.attr("data-position"), transition = obj.attr("data-in"), delay = obj.attr("data-delay"), time = obj.attr('data-time'), easing = obj.attr('data-ease-in'),
-			// check for special options
-			special = obj.attr("data-special");
+				// check for special options
+				special = obj.attr("data-special");
 
 			if (position == null) {
 				position = options.position.split(',');
@@ -651,7 +650,7 @@
 		function objOut() {
 			var objs = temp.lastSlide.children(':not([data-fixed])');
 
-			objs.each(function() {
+			objs.each(function () {
 				var obj = $(this), position = obj.position(), transition = obj.attr("data-out"), easing = obj.attr("data-ease-out");
 
 				if (transition == null) {
@@ -663,7 +662,7 @@
 				}
 
 				objectAnimationOut(obj, position, transition, null, easing);
-			}).promise().done(function() {
+			}).promise().done(function () {
 				endSlide();
 				startSlide();
 			});
@@ -684,79 +683,79 @@
 				unit = 'px';
 			}
 
-			switch(animation) {
-				case 'slideLeft':
-					cssStart.left = sliderWidth + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'slideTop':
-					cssStart.left = '0' + unit;
-					cssStart.top = -sliderHeight + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'slideBottom':
-					cssStart.left = '0' + unit;
-					cssStart.top = sliderHeight + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'slideRight':
-					cssStart.left = -sliderWidth + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'fade':
-					cssStart.left = '0' + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					cssStart.opacity = 0;
-					cssEnd.opacity = 1;
-					break;
-				case 'none':
-					cssStart.left = '0' + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					speed = 0;
-					break;
-				case 'scrollLeft':
-					cssStart.left = sliderWidth + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'scrollTop':
-					cssStart.left = '0' + unit;
-					cssStart.top = -sliderHeight + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'scrollBottom':
-					cssStart.left = '0' + unit;
-					cssStart.top = sliderHeight + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'scrollRight':
-					cssStart.left = -sliderWidth + unit;
-					cssStart.top = '0' + unit;
-					cssStart.display = 'block';
-					cssEnd.left = '0' + unit;
-					cssEnd.top = '0' + unit;
-					break;
+			switch (animation) {
+			case 'slideLeft':
+				cssStart.left = sliderWidth + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'slideTop':
+				cssStart.left = '0' + unit;
+				cssStart.top = -sliderHeight + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'slideBottom':
+				cssStart.left = '0' + unit;
+				cssStart.top = sliderHeight + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'slideRight':
+				cssStart.left = -sliderWidth + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'fade':
+				cssStart.left = '0' + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				cssStart.opacity = 0;
+				cssEnd.opacity = 1;
+				break;
+			case 'none':
+				cssStart.left = '0' + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				speed = 0;
+				break;
+			case 'scrollLeft':
+				cssStart.left = sliderWidth + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'scrollTop':
+				cssStart.left = '0' + unit;
+				cssStart.top = -sliderHeight + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'scrollBottom':
+				cssStart.left = '0' + unit;
+				cssStart.top = sliderHeight + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'scrollRight':
+				cssStart.left = -sliderWidth + unit;
+				cssStart.top = '0' + unit;
+				cssStart.display = 'block';
+				cssEnd.left = '0' + unit;
+				cssEnd.top = '0' + unit;
+				break;
 			}
 
-			slide.css(cssStart).animate(cssEnd, speed, 'linear', function() {
+			slide.css(cssStart).animate(cssEnd, speed, 'linear', function () {
 				startSlideComplete(slide);
 			});
 		}
@@ -770,33 +769,33 @@
 				unit = 'px';
 			}
 
-			switch(animation) {
-				// case 'none':
-				//  cssStart.display = 'none';
-				//  speed = 0
-				//  break;
-				case 'scrollLeft':
-					cssEnd.left = -sliderWidth + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				case 'scrollTop':
-					cssEnd.left = '0' + unit;
-					cssEnd.top = sliderHeight + unit;
-					break;
-				case 'scrollBottom':
-					cssEnd.left = '0' + unit;
-					cssEnd.top = -sliderHeight + unit;
-					break;
-				case 'scrollRight':
-					cssEnd.left = sliderWidth + unit;
-					cssEnd.top = '0' + unit;
-					break;
-				default:
-					speed = 0;
-					break;
+			switch (animation) {
+			// case 'none':
+			//  cssStart.display = 'none';
+			//  speed = 0
+			//  break;
+			case 'scrollLeft':
+				cssEnd.left = -sliderWidth + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			case 'scrollTop':
+				cssEnd.left = '0' + unit;
+				cssEnd.top = sliderHeight + unit;
+				break;
+			case 'scrollBottom':
+				cssEnd.left = '0' + unit;
+				cssEnd.top = -sliderHeight + unit;
+				break;
+			case 'scrollRight':
+				cssEnd.left = sliderWidth + unit;
+				cssEnd.top = '0' + unit;
+				break;
+			default:
+				speed = 0;
+				break;
 			}
 
-			temp.lastSlide.animate(cssEnd, speed, 'linear', function() {
+			temp.lastSlide.animate(cssEnd, speed, 'linear', function () {
 				endSlideComplete();
 			});
 		}
@@ -819,51 +818,51 @@
 			cssStart.opacity = 1;
 
 			// set start position
-			switch(transition) {
-				case 'left':
-					cssStart.top = position[0];
-					cssStart.left = sliderWidth;
-					break;
-				case 'bottomLeft':
-					cssStart.top = sliderHeight;
-					cssStart.left = sliderWidth;
-					break;
-				case 'topLeft':
-					cssStart.top = obj.outerHeight() * -1;
-					cssStart.left = sliderWidth;
-					break;
-				case 'top':
-					cssStart.top = obj.outerHeight() * -1;
-					cssStart.left = position[1];
-					break;
-				case 'bottom':
-					cssStart.top = sliderHeight;
-					cssStart.left = position[1];
-					break;
-				case 'right':
-					cssStart.top = position[0];
-					cssStart.left = -offsetX - obj.outerWidth();
-					break;
-				case 'bottomRight':
-					cssStart.top = sliderHeight;
-					cssStart.left = -offsetX - obj.outerWidth();
-					break;
-				case 'topRight':
-					cssStart.top = obj.outerHeight() * -1;
-					cssStart.left = -offsetX - obj.outerWidth();
-					break;
-				case 'fade':
-					cssStart.top = position[0];
-					cssStart.left = position[1];
-					cssStart.opacity = 0;
-					cssEnd.opacity = 1;
-					break;
-				case 'none':
-					cssStart.top = position[0];
-					cssStart.left = position[1];
-					cssStart.display = 'none';
-					speed = 0;
-					break;
+			switch (transition) {
+			case 'left':
+				cssStart.top = position[0];
+				cssStart.left = sliderWidth;
+				break;
+			case 'bottomLeft':
+				cssStart.top = sliderHeight;
+				cssStart.left = sliderWidth;
+				break;
+			case 'topLeft':
+				cssStart.top = obj.outerHeight() * -1;
+				cssStart.left = sliderWidth;
+				break;
+			case 'top':
+				cssStart.top = obj.outerHeight() * -1;
+				cssStart.left = position[1];
+				break;
+			case 'bottom':
+				cssStart.top = sliderHeight;
+				cssStart.left = position[1];
+				break;
+			case 'right':
+				cssStart.top = position[0];
+				cssStart.left = -offsetX - obj.outerWidth();
+				break;
+			case 'bottomRight':
+				cssStart.top = sliderHeight;
+				cssStart.left = -offsetX - obj.outerWidth();
+				break;
+			case 'topRight':
+				cssStart.top = obj.outerHeight() * -1;
+				cssStart.left = -offsetX - obj.outerWidth();
+				break;
+			case 'fade':
+				cssStart.top = position[0];
+				cssStart.left = position[1];
+				cssStart.opacity = 0;
+				cssEnd.opacity = 1;
+				break;
+			case 'none':
+				cssStart.top = position[0];
+				cssStart.left = position[1];
+				cssStart.display = 'none';
+				speed = 0;
+				break;
 			}
 
 			// set target position
@@ -877,7 +876,7 @@
 			cssStart.top = cssStart.top + unit;
 
 			// set the delay
-			timeouts.push(setTimeout(function() {
+			timeouts.push(setTimeout(function () {
 				// for special=cylce
 				if (special == 'cycle' && obj.attr('rel') == vars.currentSlide) {
 					var tmp = obj.prev();
@@ -896,7 +895,7 @@
 				}
 
 				// animate
-				obj.css(cssStart).show().animate(cssEnd, speed, easing, function() {
+				obj.css(cssStart).show().animate(cssEnd, speed, easing, function () {
 					objFinished(obj);
 				}).addClass('fs_obj_active');
 			}, delay));
@@ -922,50 +921,50 @@
 			}
 
 			// set target position
-			switch(transition) {
-				case 'left':
-					cssEnd.left = -offsetX - 100 - w;
-					break;
-				case 'bottomLeft':
-					cssEnd.top = sliderHeight;
-					cssEnd.left = -offsetX - 100 - w;
-					break;
-				case 'topLeft':
-					cssEnd.top = -h;
-					cssEnd.left = -offsetX - 100 - w;
-					break;
-				case 'top':
-					cssEnd.top = -h;
-					break;
-				case 'bottom':
-					cssEnd.top = sliderHeight;
-					break;
-				case 'right':
-					cssEnd.left = sliderWidth;
-					break;
-				case 'bottomRight':
-					cssEnd.top = sliderHeight;
-					cssEnd.left = sliderWidth;
-					break;
-				case 'topRight':
-					cssEnd.top = -h;
-					cssEnd.left = sliderWidth;
-					break;
-				case 'fade':
-					cssStart.opacity = 1;
-					cssEnd.opacity = 0;
-					break;
-				case 'hide':
-					cssEnd.display = 'none';
-					speed = 0;
-					break;
-				default:
-					cssEnd.display = 'none';
-					speed = 0;
-					break;
+			switch (transition) {
+			case 'left':
+				cssEnd.left = -offsetX - 100 - w;
+				break;
+			case 'bottomLeft':
+				cssEnd.top = sliderHeight;
+				cssEnd.left = -offsetX - 100 - w;
+				break;
+			case 'topLeft':
+				cssEnd.top = -h;
+				cssEnd.left = -offsetX - 100 - w;
+				break;
+			case 'top':
+				cssEnd.top = -h;
+				break;
+			case 'bottom':
+				cssEnd.top = sliderHeight;
+				break;
+			case 'right':
+				cssEnd.left = sliderWidth;
+				break;
+			case 'bottomRight':
+				cssEnd.top = sliderHeight;
+				cssEnd.left = sliderWidth;
+				break;
+			case 'topRight':
+				cssEnd.top = -h;
+				cssEnd.left = sliderWidth;
+				break;
+			case 'fade':
+				cssStart.opacity = 1;
+				cssEnd.opacity = 0;
+				break;
+			case 'hide':
+				cssEnd.display = 'none';
+				speed = 0;
+				break;
+			default:
+				cssEnd.display = 'none';
+				speed = 0;
+				break;
 			}
 
-			if ( typeof cssEnd.top != 'undefined') {
+			if (typeof cssEnd.top != 'undefined') {
 				// substracts the px
 				if (cssEnd.top.toString().indexOf('px') > 0) {
 					cssEnd.top = cssEnd.top.substring(0, cssEnd.top.length - 2);
@@ -975,7 +974,7 @@
 				}
 			}
 
-			if ( typeof cssEnd.left != 'undefined') {
+			if (typeof cssEnd.left != 'undefined') {
 				if (cssEnd.left.toString().indexOf('px') > 0) {
 					cssEnd.left = cssEnd.left.substring(0, cssEnd.left.length - 2);
 					if (options.responsive) {
@@ -989,7 +988,7 @@
 			cssEnd.top = cssEnd.top + unit;
 
 			// animation
-			obj.css(cssStart).animate(cssEnd, speed, easing, function() {
+			obj.css(cssStart).animate(cssEnd, speed, easing, function () {
 				obj.hide();
 			}).removeClass('fs_obj_active');
 		}
@@ -1021,14 +1020,14 @@
 
 			dX = d['0'];
 			dY = d['1'];
-			
+
 			if (!options.increase) {
-				$(element).css({"maxWidth": dX+"px"});
+				$(element).css({"maxWidth": dX + "px"});
 			}
 
 			var objs = slider.children('.slide').find('*');
 
-			objs.each(function() {
+			objs.each(function () {
 				var obj = $(this), x = null, y = null, value = null;
 
 				// calculate % position
@@ -1091,7 +1090,7 @@
 
 			resizeSlider();
 
-			$(window).bind('resize', function() {
+			$(window).bind('resize', function () {
 				resizeSlider();
 			});
 
@@ -1099,7 +1098,7 @@
 
 		function resizeSlider() {
 			var w = slider.innerWidth(), h = slider.innerHeight();
-			if (w <= dX || options.increase ) {
+			if (w <= dX || options.increase) {
 				var xy = dX / dY, nH = w / xy;
 				slider.find('.fs-stretcher').css({
 					'width' : w + 'px',
@@ -1127,7 +1126,7 @@
 		function resizeFontSize() {
 			var value = null, n = null, objs = slider.children('.slide').find('*');
 
-			objs.each(function() {
+			objs.each(function () {
 				obj = $(this);
 
 				var value = obj.attr('data-fontsize');
@@ -1156,7 +1155,7 @@
 
 		function stopTimeouts(timeouts) {
 			var length = timeouts.length;
-			$.each(timeouts, function(index) {
+			$.each(timeouts, function (index) {
 				clearTimeout(this);
 				if (index == length - 1) {
 					timeouts = [];
@@ -1170,15 +1169,14 @@
 	/** PLUGIN  **/
 	/** ************************* **/
 
-	$.fn.fractionSlider = function(method) {
+	$.fn.fractionSlider = function (method) {
 		if (methods[method]) {
 			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-		} else if ( typeof method == 'object' || !method) {
-			return methods.init.apply(this, arguments);
-		} else {
-			$.error('Method ' + method + ' does not exist on jQuery.tooltip');
 		}
-
+		if (typeof method == 'object' || !method) {
+			return methods.init.apply(this, arguments);
+		}
+		$.error('Method ' + method + ' does not exist on jQuery.tooltip');
 	};
 
 	/** ************************* **/
@@ -1190,40 +1188,40 @@
 
 	var baseEasings = {};
 
-	$.each(["Quad", "Cubic", "Quart", "Quint", "Expo"], function(i, name) {
+	$.each(["Quad", "Cubic", "Quart", "Quint", "Expo"], function (i, name) {
 		baseEasings[name] = function(p) {
 			return Math.pow(p, i + 2);
 		};
 	});
 
 	$.extend(baseEasings, {
-		Sine : function(p) {
+		Sine : function (p) {
 			return 1 - Math.cos(p * Math.PI / 2);
 		},
-		Circ : function(p) {
+		Circ : function (p) {
 			return 1 - Math.sqrt(1 - p * p);
 		},
-		Elastic : function(p) {
+		Elastic : function (p) {
 			return p == 0 || p == 1 ? p : -Math.pow(2, 8 * (p - 1)) * Math.sin(((p - 1) * 80 - 7.5 ) * Math.PI / 15);
 		},
-		Back : function(p) {
-			return p * p * (3 * p - 2 );
+		Back : function (p) {
+			return p * p * (3 * p - 2);
 		},
-		Bounce : function(p) {
+		Bounce : function (p) {
 			var pow2, bounce = 4;
 
-			while (p < (( pow2 = Math.pow(2, --bounce) ) - 1 ) / 11) {
+			while (p < ((pow2 = Math.pow(2, bounce -= 1)) - 1 ) / 11) {
 			}
 			return 1 / Math.pow(4, 3 - bounce) - 7.5625 * Math.pow((pow2 * 3 - 2 ) / 22 - p, 2);
 		}
 	});
 
-	$.each(baseEasings, function(name, easeIn) {
+	$.each(baseEasings, function (name, easeIn) {
 		$.easing["easeIn" + name] = easeIn;
-		$.easing["easeOut" + name] = function(p) {
+		$.easing["easeOut" + name] = function (p) {
 			return 1 - easeIn(1 - p);
 		};
-		$.easing["easeInOut" + name] = function(p) {
+		$.easing["easeInOut" + name] = function (p) {
 			return p < 0.5 ? easeIn(p * 2) / 2 : 1 - easeIn(p * -2 + 2) / 2;
 		};
 	});
